@@ -47,14 +47,17 @@ void AMazeGenerator::BeginPlay()
             if (Cell->LeftWall) {
                 Cell->SpawnLeftWall();
             }
+            Cell->SpawnFloor();
         }
     }
 
     for (int32 RowIndex = 0; RowIndex < maze.Num(); RowIndex++) {
         maze[RowIndex][maze[RowIndex].Num() - 1]->DestroyBotWall();
+        maze[RowIndex][maze[RowIndex].Num() - 1]->DestroyFloor();
     }
     for (int32 ColumnIndex = 0; ColumnIndex < maze[0].Num(); ColumnIndex++) {
         maze[maze.Num() - 1][ColumnIndex]->DestroyLeftWall();
+        maze[maze.Num() - 1][ColumnIndex]->DestroyFloor();
     }
 
 }

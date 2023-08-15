@@ -32,10 +32,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMesh* WallMesh;
 
+	UStaticMeshComponent* MeshComponent;
+
 	UPROPERTY()
 	AStaticMeshActor* BotWall;
 	UPROPERTY()
 	AStaticMeshActor* LWall;
+	UPROPERTY()
+	AStaticMeshActor* Floor;
 
 	void SetX(int32 NewX) { x = NewX; }
 	void SetY(int32 NewY) { y = NewY; }
@@ -49,6 +53,9 @@ public:
 
 	void SpawnLeftWall();
 	void DestroyLeftWall();
+
+	void SpawnFloor();
+	void DestroyFloor();
 
 protected:
 	virtual void BeginPlay() override;

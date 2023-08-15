@@ -27,7 +27,9 @@ void AMazeGeneratorCell::SpawnBotWall() {
 		BotWall = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass());
 		BotWall -> SetActorLabel(FString::Printf(TEXT("BotWall%d%d"), x, y));
 
-		UStaticMeshComponent* MeshComponent = BotWall->GetStaticMeshComponent();
+		BotWall->SetMobility(EComponentMobility::Movable);
+		 
+		MeshComponent = BotWall->GetStaticMeshComponent();
 		if (MeshComponent) {
 			MeshComponent->SetStaticMesh(WallMesh);
 		}
@@ -40,8 +42,6 @@ void AMazeGeneratorCell::SpawnBotWall() {
 		float Height = BoxExtent.Y * 2;
 		float Depth = BoxExtent.Z * 2;
 
-		BotWall->SetMobility(EComponentMobility::Movable);
-		 
 		//Calculate and set location
 		FVector ActorLocation = FVector(x * Width, y * Width, Width / 2);
 		BotWall->SetActorLocation(ActorLocation);
@@ -66,7 +66,9 @@ void AMazeGeneratorCell::SpawnLeftWall() {
 		LWall = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass());
 		LWall -> SetActorLabel(FString::Printf(TEXT("LeftWall%d%d"), x, y));
 
-		UStaticMeshComponent* MeshComponent = LWall->GetStaticMeshComponent();
+		LWall->SetMobility(EComponentMobility::Movable);
+
+		MeshComponent = LWall->GetStaticMeshComponent();
 		if (MeshComponent) {
 			MeshComponent->SetStaticMesh(WallMesh);
 		}
@@ -78,8 +80,6 @@ void AMazeGeneratorCell::SpawnLeftWall() {
 		float Width = BoxExtent.X * 2;
 		float Height = BoxExtent.Y * 2;
 		float Depth = BoxExtent.Z * 2;
-
-		LWall->SetMobility(EComponentMobility::Movable);
 
 		//Calculate and set location
 		FVector ActorLocation = FVector(x * Width + (Width / 2 - Height / 2), y * Width - (Width / 2 - Height / 2), Width / 2);
@@ -100,6 +100,42 @@ void AMazeGeneratorCell::DestroyLeftWall() {
 	}
 }
 
+void AMazeGeneratorCell::SpawnFloor() {
+	//CreateFloor for every cell
+	Floor = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass());
+	Floor->SetActorLabel(FString::Printf(TEXT("Floor%d%d"), x, y));
+
+	Floor->SetMobility(EComponentMobility::Movable);
+
+	MeshComponent = Floor->GetStaticMeshComponent();
+	if (MeshComponent) {
+		MeshComponent->SetStaticMesh(WallMesh);
+	}
+
+	FVector Origin, BoxExtent;
+	MeshComponent->GetLocalBounds(Origin, BoxExtent);
+
+	//MeshSize
+	float Width = BoxExtent.X * 2;
+	float Height = BoxExtent.Y * 2;
+	float Depth = BoxExtent.Z * 2;
+
+	//Calculate and set location
+	FVector ActorLocation = FVector(x * Width + Width / 2, y * Width, 0);
+	Floor->SetActorLocation(ActorLocation);
+
+	//Set rotation
+	FRotator ActorRotation = FRotator(0.f, 0.f, 90.f);
+	Floor->SetActorRotation(ActorRotation);
+}
+
+void AMazeGeneratorCell::DestroyFloor() {
+	if (Floor)
+	{
+		Floor -> Destroy();
+		Floor = nullptr;
+	}
+}
 
 // Called every frame
 void AMazeGeneratorCell::Tick(float DeltaTime)
