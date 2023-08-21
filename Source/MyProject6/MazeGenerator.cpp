@@ -10,6 +10,8 @@ AMazeGenerator::AMazeGenerator()
 {
     PrimaryActorTick.bCanEverTick = true;
 
+    MazeGenerated = false;
+
 }
 
 void AMazeGenerator::BeginPlay()
@@ -74,14 +76,14 @@ void AMazeGenerator::BeginPlay()
         PlayerSpawnPoints.Add(Cast<ASpawnPoint>(*Iterator));
     }
     UE_LOG(LogTemp, Warning, TEXT("NUM ====================== %d"), PlayerSpawnPoints.Num());
-    for (int32 i = 1; i < PlayerControllers.Num(); i++) {
-        if (AMyMazeGameMode* GM = Cast<AMyMazeGameMode>(GetWorld()->GetAuthGameMode())) {
-            GM->SetSpawnPoints(PlayerSpawnPoints);
-            GM->MazeGenerated = true;
-            GM->PostLogin(PlayerControllers[i]);
-            //GM->SpawnPlayer(PlayerControllers[i]);
-        }
-    }
+    //for (int32 i = 1; i < PlayerControllers.Num(); i++) {
+    //    if (AMyMazeGameMode* GM = Cast<AMyMazeGameMode>(GetWorld()->GetAuthGameMode())) {
+    //        GM->SetSpawnPoints(PlayerSpawnPoints);
+    //        GM->PostLogin(PlayerControllers[i]);
+    //        //GM->SpawnPlayer(PlayerControllers[i]);
+    //    }
+    //}
+    MazeGenerated = true;
 }
 
 void AMazeGenerator::RemoveWallsWithBacktracker() {
@@ -157,4 +159,6 @@ void AMazeGenerator::Tick(float DeltaTime)
 }
 
 
-
+bool AMazeGenerator::GetMazeGenerated() {
+    return MazeGenerated;
+}

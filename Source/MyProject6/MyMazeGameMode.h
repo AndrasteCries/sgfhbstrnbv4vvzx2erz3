@@ -19,8 +19,6 @@ class MYPROJECT6_API AMyMazeGameMode : public AGameModeBase
 public:
 	AMyMazeGameMode();
 
-	bool MazeGenerated = false;
-
 	UPROPERTY(BlueprintReadOnly)
 	TArray<ASpawnPoint*> SpawnPoints;
 

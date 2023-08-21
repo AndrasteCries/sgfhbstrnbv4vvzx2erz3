@@ -26,6 +26,9 @@ public:
 	UStaticMesh* WallMesh;
 
 	TArray<TArray<AMazeGeneratorCell*>> Maze;
+	
+	bool MazeGenerated;
+
 	AMazeGenerator();
 
 
@@ -39,6 +42,7 @@ private:
 public:	
 	virtual void Tick(float DeltaTime) override;
 
-	void SpawnStaticMeshActor(const FVector& InLocation, const FRotator& InRotation);
+	UFUNCTION(BlueprintCallable)
+	bool GetMazeGenerated();
 
 };
