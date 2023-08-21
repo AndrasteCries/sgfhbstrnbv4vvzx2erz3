@@ -5,7 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "MazeGeneratorCell.h"
+#include "MyMazeGameMode.h"
 #include "MazeGenerator.generated.h"
+
+class AMazeGeneratorCell;
 
 UCLASS()
 class MYPROJECT6_API AMazeGenerator : public AActor
@@ -21,15 +24,19 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMesh* WallMesh;
-	// Sets default values for this actor's properties
+
+	TArray<TArray<AMazeGeneratorCell*>> Maze;
 	AMazeGenerator();
 
+
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+private:
+	void RemoveWallsWithBacktracker();
+	void RemoveWall(AMazeGeneratorCell* Current, AMazeGeneratorCell* Choosen);
+
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	void SpawnStaticMeshActor(const FVector& InLocation, const FRotator& InRotation);

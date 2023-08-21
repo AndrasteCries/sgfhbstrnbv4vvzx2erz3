@@ -11,7 +11,7 @@ AMazeGeneratorCell::AMazeGeneratorCell()
 	BottomWall = true;
 	LeftWall = true;
 
-	Visited = true;
+	Visited = false;
 
 }
 
@@ -38,12 +38,12 @@ void AMazeGeneratorCell::SpawnBotWall() {
 		MeshComponent->GetLocalBounds(Origin, BoxExtent);
 
 		//MeshSize
-		float Width = BoxExtent.X * 2;
-		float Height = BoxExtent.Y * 2;
-		float Depth = BoxExtent.Z * 2;
+		WallWidth = BoxExtent.X * 2;
+		WallHeight = BoxExtent.Y * 2;
+		WallDepth = BoxExtent.Z * 2;
 
 		//Calculate and set location
-		FVector ActorLocation = FVector(x * Width, y * Width, Width / 2);
+		FVector ActorLocation = FVector(x * WallWidth, y * WallWidth, WallWidth / 2);
 		BotWall->SetActorLocation(ActorLocation);
 
 		//Set rotation
@@ -73,16 +73,8 @@ void AMazeGeneratorCell::SpawnLeftWall() {
 			MeshComponent->SetStaticMesh(WallMesh);
 		}
 
-		FVector Origin, BoxExtent;
-		MeshComponent->GetLocalBounds(Origin, BoxExtent);
-
-		//MeshSize
-		float Width = BoxExtent.X * 2;
-		float Height = BoxExtent.Y * 2;
-		float Depth = BoxExtent.Z * 2;
-
 		//Calculate and set location
-		FVector ActorLocation = FVector(x * Width + (Width / 2 - Height / 2), y * Width - (Width / 2 - Height / 2), Width / 2);
+		FVector ActorLocation = FVector(x * WallWidth + (WallWidth / 2 - WallHeight / 2), y * WallWidth - (WallWidth / 2 - WallHeight / 2), WallWidth / 2);
 		LWall->SetActorLocation(ActorLocation);
 
 		//Set rotation
@@ -112,16 +104,8 @@ void AMazeGeneratorCell::SpawnFloor() {
 		MeshComponent->SetStaticMesh(WallMesh);
 	}
 
-	FVector Origin, BoxExtent;
-	MeshComponent->GetLocalBounds(Origin, BoxExtent);
-
-	//MeshSize
-	float Width = BoxExtent.X * 2;
-	float Height = BoxExtent.Y * 2;
-	float Depth = BoxExtent.Z * 2;
-
 	//Calculate and set location
-	FVector ActorLocation = FVector(x * Width + Width / 2, y * Width, 0);
+	FVector ActorLocation = FVector(x * WallWidth + WallWidth / 2, y * WallWidth, 0);
 	Floor->SetActorLocation(ActorLocation);
 
 	//Set rotation
@@ -137,9 +121,34 @@ void AMazeGeneratorCell::DestroyFloor() {
 	}
 }
 
+void AMazeGeneratorCell::SpawnPlayerStart() {
+	PlayerStart = GetWorld()->SpawnActor<ASpawnPoint>(ASpawnPoint::StaticClass());
+	PlayerStart->SetActorLabel(FString::Printf(TEXT("PlayerStart%d%d"), x, y));
+
+	FVector ActorLocation = FVector(x * WallWidth + WallWidth / 2, y * WallWidth, 200);
+	PlayerStart->SetActorLocation(ActorLocation);
+
+	FRotator RandomRotation = FRotator(0, FMath::RandRange(-180.f, 180.f),  0
+		
+	);
+
+	PlayerStart->SetActorRotation(RandomRotation);
+
+
+}
+
+void AMazeGeneratorCell::DestroyPlayerStart() {
+	if (PlayerStart)
+	{
+		PlayerStart->Destroy();
+		PlayerStart = nullptr;
+	}
+}
+
 // Called every frame
 void AMazeGeneratorCell::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);	
+
 }
 

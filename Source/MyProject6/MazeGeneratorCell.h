@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/Pawn.h"
+#include "SpawnPoint.h"
 #include "MazeGeneratorCell.generated.h"
 
 class AStaticMeshActor;
@@ -20,6 +22,13 @@ public:
 	int32 x;
 	UPROPERTY()
 	int32 y;
+
+	UPROPERTY()
+	float WallWidth;
+	UPROPERTY()
+	float WallHeight;
+	UPROPERTY()	
+	float WallDepth;
 
 	UPROPERTY()
 	bool BottomWall;
@@ -41,12 +50,7 @@ public:
 	UPROPERTY()
 	AStaticMeshActor* Floor;
 
-	void SetX(int32 NewX) { x = NewX; }
-	void SetY(int32 NewY) { y = NewY; }
-	int32 GetX() const { return x; }
-	int32 GetY() const { return y; }
-
-	virtual void Tick(float DeltaTime) override;
+	ASpawnPoint* PlayerStart;
 
 	void SpawnBotWall();
 	void DestroyBotWall();
@@ -56,6 +60,16 @@ public:
 
 	void SpawnFloor();
 	void DestroyFloor();
+
+	void SpawnPlayerStart();
+	void DestroyPlayerStart();
+
+	virtual void Tick(float DeltaTime) override;
+
+	void SetX(int32 NewX) { x = NewX; }
+	void SetY(int32 NewY) { y = NewY; }
+	int32 GetX() const { return x; }
+	int32 GetY() const { return y; }
 
 protected:
 	virtual void BeginPlay() override;
