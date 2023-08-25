@@ -1,11 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "MazeGeneratorCell.h"
-#include "MyMazeGameMode.h"
+#include "Maze.h"
+#include "Net/UnrealNetwork.h"
 #include "MazeGenerator.generated.h"
 
 class AMazeGeneratorCell;
@@ -14,7 +13,10 @@ UCLASS()
 class MYPROJECT6_API AMazeGenerator : public AActor
 {
 	GENERATED_BODY()
+
 public:	
+
+	AMazeGenerator();
 
 	UPROPERTY(Category = "Settings", EditAnywhere, BlueprintReadWrite)
 	int32 Height = 5;
@@ -25,12 +27,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMesh* WallMesh;
 
-	TArray<TArray<AMazeGeneratorCell*>> Maze;
+	UPROPERTY(Replicated)
+	AMaze* Maze;
 	
 	bool MazeGenerated;
 
-	AMazeGenerator();
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION(BlueprintCallable)
+		bool GetMazeGenerated();
 
 protected:
 	virtual void BeginPlay() override;
@@ -38,11 +45,4 @@ protected:
 private:
 	void RemoveWallsWithBacktracker();
 	void RemoveWall(AMazeGeneratorCell* Current, AMazeGeneratorCell* Choosen);
-
-public:	
-	virtual void Tick(float DeltaTime) override;
-
-	UFUNCTION(BlueprintCallable)
-	bool GetMazeGenerated();
-
 };

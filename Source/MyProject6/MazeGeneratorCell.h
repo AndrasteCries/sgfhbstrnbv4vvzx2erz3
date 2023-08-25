@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "GameFramework/Pawn.h"
 #include "SpawnPoint.h"
+#include "Net/UnrealNetwork.h"
 #include "MazeGeneratorCell.generated.h"
 
 class AStaticMeshActor;
@@ -23,32 +24,29 @@ public:
 	UPROPERTY()
 	int32 y;
 
-	UPROPERTY()
-	float WallWidth;
-	UPROPERTY()
-	float WallHeight;
-	UPROPERTY()	
-	float WallDepth;
+	UPROPERTY(Category = "Mesh", EditAnywhere, BlueprintReadWrite)
+	UStaticMesh* WallMesh;
+	UPROPERTY(Category = "Mesh", EditAnywhere, BlueprintReadWrite)
+	UStaticMesh* CollumnMesh;
+
+	UPROPERTY(Category = "Mesh", Replicated, BlueprintReadWrite, EditAnywhere)
+	UStaticMeshComponent* BottomWallMeshComponent;
+	UPROPERTY(Category = "Mesh", Replicated, BlueprintReadWrite, EditAnywhere)
+	UStaticMeshComponent* LeftWallMeshComponent;
+	UPROPERTY(Category = "Mesh", Replicated, BlueprintReadWrite, EditAnywhere)
+	UStaticMeshComponent* FloorWallMeshComponent;
+	UPROPERTY(Category = "Mesh", BlueprintReadWrite, EditAnywhere)
+	UStaticMeshComponent* CollumnMeshComponent;
 
 	UPROPERTY()
 	bool BottomWall;
 	UPROPERTY()
 	bool LeftWall;
+	UPROPERTY()
+	bool Floor;
 	
 	UPROPERTY()
 	bool Visited;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UStaticMesh* WallMesh;
-
-	UStaticMeshComponent* MeshComponent;
-
-	UPROPERTY()
-	AStaticMeshActor* BotWall;
-	UPROPERTY()
-	AStaticMeshActor* LWall;
-	UPROPERTY()
-	AStaticMeshActor* Floor;
 
 	ASpawnPoint* PlayerStart;
 
@@ -65,6 +63,8 @@ public:
 	void DestroyPlayerStart();
 
 	virtual void Tick(float DeltaTime) override;
+	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const override;
+
 
 	void SetX(int32 NewX) { x = NewX; }
 	void SetY(int32 NewY) { y = NewY; }
@@ -72,6 +72,10 @@ public:
 	int32 GetY() const { return y; }
 
 protected:
+
+	USceneComponent* MyRootComponent;
+
+
 	virtual void BeginPlay() override;
 
 };

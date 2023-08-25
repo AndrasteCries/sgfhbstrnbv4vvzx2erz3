@@ -6,11 +6,9 @@
 #include "GameFramework/GameModeBase.h"
 #include "GameFramework/PlayerStart.h"
 #include "SpawnPoint.h"
+#include "MazeGenerator.h"
 #include "MyMazeGameMode.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class MYPROJECT6_API AMyMazeGameMode : public AGameModeBase
 {
@@ -27,6 +25,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SpawnPlayer(APlayerController* NewPlayer);
 	
+	AMazeGenerator* Generator;
 
 	UFUNCTION(BlueprintCallable)
 	void SetSpawnPoints(TArray<ASpawnPoint*> WorldSpawnPoints);

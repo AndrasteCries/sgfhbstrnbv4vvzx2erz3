@@ -11,6 +11,10 @@ AMyMazeGameMode::AMyMazeGameMode() {
 void AMyMazeGameMode::BeginPlay() {
 	
 	Super::BeginPlay();
+	FVector Location = FVector(0, 0, 0);
+	FRotator Rotation = FRotator::ZeroRotator;
+	Generator = GetWorld()->SpawnActor<AMazeGenerator>(AMazeGenerator::StaticClass(), Location, Rotation);
+	UE_LOG(LogTemp, Warning, TEXT("GENERATOR SPAWNED"));
 }
 
 

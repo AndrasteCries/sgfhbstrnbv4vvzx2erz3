@@ -8,8 +8,66 @@ AMazeGeneratorCell::AMazeGeneratorCell()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	BottomWall = true;
-	LeftWall = true;
+	MyRootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+	SetRootComponent(MyRootComponent);
+
+
+	WallMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/wall/FullWall"));
+	if (!WallMesh) UE_LOG(LogTemp, Warning, TEXT("WallMesh Error"));
+	CollumnMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/wall/WallCollumn"));
+	if (!CollumnMesh) UE_LOG(LogTemp, Warning, TEXT("WallMesh Error"));
+
+	BottomWallMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BottomWallMesh"));
+	if (BottomWallMeshComponent) {
+		BottomWallMeshComponent->SetStaticMesh(WallMesh);
+		BottomWall = true;
+		BottomWallMeshComponent->SetupAttachment(MyRootComponent);
+		BottomWallMeshComponent->SetRelativeLocation(FVector(225.f, 0.f, 0.f));
+		BottomWallMeshComponent->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("BottomWallMeshComponent Error"));
+		BottomWall = false;
+	}
+
+	LeftWallMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftWallMesh"));
+	if (LeftWallMeshComponent) {
+		LeftWallMeshComponent->SetStaticMesh(WallMesh);
+		LeftWall = true;
+		LeftWallMeshComponent->SetupAttachment(MyRootComponent);
+		LeftWallMeshComponent->SetRelativeLocation(FVector(0.f, 225.f, 0.f));
+		LeftWallMeshComponent->SetRelativeRotation(FRotator(0.f, 0.f, 0.f));
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("LeftWallMeshComponent Error"));
+		LeftWall = false;
+	}
+
+	FloorWallMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FloorWallMesh"));
+	if (FloorWallMeshComponent) {
+		FloorWallMeshComponent->SetStaticMesh(WallMesh);
+		Floor = true;
+		FloorWallMeshComponent->SetupAttachment(MyRootComponent);
+		FloorWallMeshComponent->SetRelativeLocation(FVector(0.f, 0.f, -250.f));
+		FloorWallMeshComponent->SetRelativeScale3D(FVector(1.05f, 1.f, 1.05f));
+		FloorWallMeshComponent->SetRelativeRotation(FRotator(0.f, 0.f, 90.f));
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("FloorWallMeshComponent Error"));
+		Floor = false;
+	}
+
+	CollumnMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CollumnWallMesh"));
+	if (CollumnMeshComponent) {
+		CollumnMeshComponent->SetStaticMesh(CollumnMesh);
+		CollumnMeshComponent->SetupAttachment(MyRootComponent);
+		CollumnMeshComponent->SetRelativeLocation(FVector(225.f, 225.f, 0.f));
+		CollumnMeshComponent->SetRelativeRotation(FRotator(0.f, 0.f, 0.f));
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("CollumnMeshComponent Error"));
+	}
+
 
 	Visited = false;
 
@@ -23,126 +81,35 @@ void AMazeGeneratorCell::BeginPlay()
 }
 
 void AMazeGeneratorCell::SpawnBotWall() {
-	if (BotWall == nullptr) {
-		BotWall = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass());
-		BotWall -> SetActorLabel(FString::Printf(TEXT("BotWall%d%d"), x, y));
 
-		BotWall->SetMobility(EComponentMobility::Movable);
-		 
-		MeshComponent = BotWall->GetStaticMeshComponent();
-		if (MeshComponent) {
-			MeshComponent->SetStaticMesh(WallMesh);
-		}
-
-		FVector Origin, BoxExtent;
-		MeshComponent->GetLocalBounds(Origin, BoxExtent);
-
-		//MeshSize
-		WallWidth = BoxExtent.X * 2;
-		WallHeight = BoxExtent.Y * 2;
-		WallDepth = BoxExtent.Z * 2;
-
-		//Calculate and set location
-		FVector ActorLocation = FVector(x * WallWidth, y * WallWidth, WallWidth / 2);
-		BotWall->SetActorLocation(ActorLocation);
-
-		//Set rotation
-		FRotator ActorRotation = FRotator(0.f, 90.f, 0.f);
-		BotWall->SetActorRotation(ActorRotation);
-
-	}
 }
 
 void AMazeGeneratorCell::DestroyBotWall() {
-	if (BotWall)
-	{
-		BotWall->Destroy();
-		BotWall = nullptr;
-	}
+
 }
 
 void AMazeGeneratorCell::SpawnLeftWall() {
-	if (LWall == nullptr) {
-		LWall = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass());
-		LWall -> SetActorLabel(FString::Printf(TEXT("LeftWall%d%d"), x, y));
 
-		LWall->SetMobility(EComponentMobility::Movable);
-
-		MeshComponent = LWall->GetStaticMeshComponent();
-		if (MeshComponent) {
-			MeshComponent->SetStaticMesh(WallMesh);
-		}
-
-		//Calculate and set location
-		FVector ActorLocation = FVector(x * WallWidth + (WallWidth / 2 - WallHeight / 2), y * WallWidth - (WallWidth / 2 - WallHeight / 2), WallWidth / 2);
-		LWall->SetActorLocation(ActorLocation);
-
-		//Set rotation
-		FRotator ActorRotation = FRotator(0.f, 0.f, 0.f);
-		LWall->SetActorRotation(ActorRotation);
-
-	}
 }
 
 void AMazeGeneratorCell::DestroyLeftWall() {
-	if (LWall)
-	{
-		LWall->Destroy();
-		LWall = nullptr;
-	}
+
 }
 
 void AMazeGeneratorCell::SpawnFloor() {
-	//CreateFloor for every cell
-	Floor = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass());
-	Floor->SetActorLabel(FString::Printf(TEXT("Floor%d%d"), x, y));
 
-	Floor->SetMobility(EComponentMobility::Movable);
-
-	MeshComponent = Floor->GetStaticMeshComponent();
-	if (MeshComponent) {
-		MeshComponent->SetStaticMesh(WallMesh);
-	}
-
-	//Calculate and set location
-	FVector ActorLocation = FVector(x * WallWidth + WallWidth / 2, y * WallWidth, 0);
-	Floor->SetActorLocation(ActorLocation);
-
-	//Set rotation
-	FRotator ActorRotation = FRotator(0.f, 0.f, 90.f);
-	Floor->SetActorRotation(ActorRotation);
 }
 
 void AMazeGeneratorCell::DestroyFloor() {
-	if (Floor)
-	{
-		Floor -> Destroy();
-		Floor = nullptr;
-	}
+
 }
 
 void AMazeGeneratorCell::SpawnPlayerStart() {
-	PlayerStart = GetWorld()->SpawnActor<ASpawnPoint>(ASpawnPoint::StaticClass());
-	PlayerStart->SetActorLabel(FString::Printf(TEXT("PlayerStart%d%d"), x, y));
-
-	FVector ActorLocation = FVector(x * WallWidth + WallWidth / 2, y * WallWidth, 200);
-	PlayerStart->SetActorLocation(ActorLocation);
-
-	FRotator RandomRotation = FRotator(0, FMath::RandRange(-180.f, 180.f),  0
-		
-	);
-
-	PlayerStart->SetActorRotation(RandomRotation);
-
 
 }
 
 void AMazeGeneratorCell::DestroyPlayerStart() {
-	if (PlayerStart)
-	{
-		PlayerStart->Destroy();
-		PlayerStart = nullptr;
-	}
+
 }
 
 // Called every frame
@@ -152,3 +119,11 @@ void AMazeGeneratorCell::Tick(float DeltaTime)
 
 }
 
+void AMazeGeneratorCell::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AMazeGeneratorCell, BottomWallMeshComponent);
+	DOREPLIFETIME(AMazeGeneratorCell, LeftWallMeshComponent);
+	DOREPLIFETIME(AMazeGeneratorCell, FloorWallMeshComponent);
+
+}
