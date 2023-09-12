@@ -21,9 +21,12 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void InitMaze(int32 InHeight, int32 InWidth, UStaticMesh* InMesh);
-	void FillMaze();
+	
 	
 protected:
 	virtual void BeginPlay() override;
+
+private:
+	void DestroyExtraMesh();
 
 };

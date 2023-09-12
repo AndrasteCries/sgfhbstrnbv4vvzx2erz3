@@ -26,7 +26,7 @@ void AMyMazeGameMode::PostLogin(APlayerController* NewPlayer) {
 	//}
 }
 
-ASpawnPoint* AMyMazeGameMode::GetSpawnPoint()
+AMazeGeneratorCell* AMyMazeGameMode::GetSpawnPoint()
 {
 	for (int32 i = 0; i < SpawnPoints.Num(); i++) {
 		int32 Slot = FMath::RandRange(0, SpawnPoints.Num() - 1);
@@ -38,7 +38,7 @@ ASpawnPoint* AMyMazeGameMode::GetSpawnPoint()
 }
 
 void AMyMazeGameMode::SpawnPlayer(APlayerController* NewPlayer) {
-	ASpawnPoint* PlayerSpawn = GetSpawnPoint();
+	AMazeGeneratorCell* PlayerSpawn = GetSpawnPoint();
 	if (PlayerSpawn) {
 		FVector Location = PlayerSpawn->GetActorLocation();
 		FRotator Rotation = PlayerSpawn->GetActorRotation();
@@ -55,7 +55,7 @@ void AMyMazeGameMode::SpawnPlayer(APlayerController* NewPlayer) {
 	}
 }
 
-void AMyMazeGameMode::SetSpawnPoints(TArray<ASpawnPoint*> WorldSpawnPoints) {
+void AMyMazeGameMode::SetSpawnPoints(TArray<AMazeGeneratorCell*> WorldSpawnPoints) {
 	SpawnPoints = WorldSpawnPoints;
 }
 

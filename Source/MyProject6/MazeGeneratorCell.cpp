@@ -3,7 +3,7 @@
 
 #include "MazeGeneratorCell.h"
 #include "Engine/StaticMeshActor.h"
-// Sets default values
+
 AMazeGeneratorCell::AMazeGeneratorCell()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -68,7 +68,7 @@ AMazeGeneratorCell::AMazeGeneratorCell()
 		UE_LOG(LogTemp, Warning, TEXT("CollumnMeshComponent Error"));
 	}
 
-
+	
 	Visited = false;
 
 }
@@ -77,38 +77,57 @@ AMazeGeneratorCell::AMazeGeneratorCell()
 void AMazeGeneratorCell::BeginPlay()
 {
 	Super::BeginPlay();
+	PlayerStart = GetWorld()->SpawnActor<ASpawnPoint>(ASpawnPoint::StaticClass());
+	PlayerStart->SetActorLabel(FString::Printf(TEXT("PlayerStart")));
+	FRotator RandomRotation = FRotator(0, FMath::RandRange(-180.f, 180.f), 0);
+
+	PlayerStart->SetActorRotation(RandomRotation);
 
 }
 
 void AMazeGeneratorCell::SpawnBotWall() {
 
+
 }
 
 void AMazeGeneratorCell::DestroyBotWall() {
+	BottomWallMeshComponent->DestroyComponent();
 
 }
 
 void AMazeGeneratorCell::SpawnLeftWall() {
 
+
 }
 
 void AMazeGeneratorCell::DestroyLeftWall() {
+	LeftWallMeshComponent->DestroyComponent();
 
 }
 
 void AMazeGeneratorCell::SpawnFloor() {
 
+
 }
 
 void AMazeGeneratorCell::DestroyFloor() {
+	FloorWallMeshComponent->DestroyComponent();
 
 }
 
 void AMazeGeneratorCell::SpawnPlayerStart() {
 
+
 }
 
 void AMazeGeneratorCell::DestroyPlayerStart() {
+	PlayerStart->Destroy();
+
+}
+
+void AMazeGeneratorCell::ReplaceSpawnPoint() {
+	FVector ActorLocation = GetActorLocation();
+	PlayerStart->SetActorRelativeLocation(ActorLocation);
 
 }
 

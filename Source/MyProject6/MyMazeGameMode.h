@@ -18,17 +18,19 @@ public:
 	AMyMazeGameMode();
 
 	UPROPERTY(BlueprintReadOnly)
-	TArray<ASpawnPoint*> SpawnPoints;
+	TArray<AMazeGeneratorCell*> SpawnPoints;
 
 	void PostLogin(APlayerController* NewPlayer);
-	ASpawnPoint* GetSpawnPoint();
+
+	AMazeGeneratorCell* GetSpawnPoint();
+
 	UFUNCTION(BlueprintCallable)
 	void SpawnPlayer(APlayerController* NewPlayer);
 	
 	AMazeGenerator* Generator;
 
 	UFUNCTION(BlueprintCallable)
-	void SetSpawnPoints(TArray<ASpawnPoint*> WorldSpawnPoints);
+	void SetSpawnPoints(TArray<AMazeGeneratorCell*> WorldSpawnPoints);
 
 	virtual void Tick(float DeltaTime) override;
 

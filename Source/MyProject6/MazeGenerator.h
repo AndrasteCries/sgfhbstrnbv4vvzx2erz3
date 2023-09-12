@@ -42,7 +42,4 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-private:
-	void RemoveWallsWithBacktracker();
-	void RemoveWall(AMazeGeneratorCell* Current, AMazeGeneratorCell* Choosen);
 };

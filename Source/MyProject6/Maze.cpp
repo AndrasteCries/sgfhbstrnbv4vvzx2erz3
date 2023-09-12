@@ -14,48 +14,37 @@ void AMaze::BeginPlay()
 
 void AMaze::InitMaze(int32 InHeight, int32 InWidth, UStaticMesh* InMesh) {
 
-    Width = InWidth;
-    Height = InHeight;
+    Width = InWidth + 1;
+    Height = InHeight + 1;
+    float MeshWidth;
+    if (InMesh)
+    {
+        FVector MeshBounds = InMesh->GetBounds().BoxExtent;
+        MeshWidth = MeshBounds.X  * 2.0f;
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Failed to load StaticMesh"));
+    }
 
     Maze.SetNum(Height);
     for (int32 RowIndex = 0; RowIndex < Maze.Num(); RowIndex++)
     {
-        UE_LOG(LogTemp, Warning, TEXT("Height succ"));
         Maze[RowIndex].SetNum(Width);
         for (int32 ColumnIndex = 0; ColumnIndex < Maze[0].Num(); ColumnIndex++)
         {
-            UE_LOG(LogTemp, Warning, TEXT("Width succ"));
-        //    //Create every cell and set param
-        //    AMazeGeneratorCell* NewCell = CreateDefaultSubobject<AMazeGeneratorCell>(TEXT("MazeCell"));
-        //    NewCell->SetX(RowIndex + 1);
-        //    NewCell->SetY(ColumnIndex + 1);
-        //    NewCell->WallMesh = InMesh;
-        //    Maze[RowIndex][ColumnIndex] = NewCell;
+            AMazeGeneratorCell* NewCell = GetWorld()->SpawnActor<AMazeGeneratorCell>(AMazeGeneratorCell::StaticClass());
+            NewCell->SetActorLocation(FVector(MeshWidth * RowIndex, MeshWidth * ColumnIndex, 0.f));
+            NewCell->SetActorRotation(FRotator(0, 180.0f, 0));
+            NewCell->SetActorLabel(FString::Printf(TEXT("Cell %d%d"), RowIndex, ColumnIndex));
+            NewCell->ReplaceSpawnPoint();
+            Maze[RowIndex][ColumnIndex] = NewCell;
         }
     }
+    DestroyExtraMesh();
 }
 
-void AMaze::FillMaze() {
-
-    for (int32 RowIndex = 0; RowIndex < Maze.Num(); RowIndex++)
-    {
-        for (int32 ColumnIndex = 0; ColumnIndex < Maze[0].Num(); ColumnIndex++)
-        {
-            AMazeGeneratorCell* Cell = Maze[RowIndex][ColumnIndex];
-
-            if (Cell->BottomWall) {
-                Cell->SpawnBotWall();
-            }
-
-            if (Cell->LeftWall) {
-                Cell->SpawnLeftWall();
-            }
-            Cell->SpawnFloor();
-            Cell->SpawnPlayerStart();
-        }
-    }
-
-    //destroy last
+void AMaze::DestroyExtraMesh() {
     for (int32 RowIndex = 0; RowIndex < Maze.Num(); RowIndex++) {
         Maze[RowIndex][Maze[RowIndex].Num() - 1]->DestroyBotWall();
         Maze[RowIndex][Maze[RowIndex].Num() - 1]->DestroyFloor();
@@ -66,6 +55,7 @@ void AMaze::FillMaze() {
         Maze[Maze.Num() - 1][ColumnIndex]->DestroyFloor();
         Maze[Maze.Num() - 1][ColumnIndex]->DestroyPlayerStart();
     }
+
 }
 
 void AMaze::Tick(float DeltaTime)

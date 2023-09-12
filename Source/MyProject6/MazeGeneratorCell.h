@@ -19,11 +19,6 @@ class MYPROJECT6_API AMazeGeneratorCell : public AActor
 public:	
 	AMazeGeneratorCell();
 
-	UPROPERTY()
-	int32 x;
-	UPROPERTY()
-	int32 y;
-
 	UPROPERTY(Category = "Mesh", EditAnywhere, BlueprintReadWrite)
 	UStaticMesh* WallMesh;
 	UPROPERTY(Category = "Mesh", EditAnywhere, BlueprintReadWrite)
@@ -62,14 +57,10 @@ public:
 	void SpawnPlayerStart();
 	void DestroyPlayerStart();
 
+	void ReplaceSpawnPoint();
+
 	virtual void Tick(float DeltaTime) override;
 	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const override;
-
-
-	void SetX(int32 NewX) { x = NewX; }
-	void SetY(int32 NewY) { y = NewY; }
-	int32 GetX() const { return x; }
-	int32 GetY() const { return y; }
 
 protected:
 
