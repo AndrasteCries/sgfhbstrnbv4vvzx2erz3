@@ -34,10 +34,11 @@ void AMaze::InitMaze(int32 InHeight, int32 InWidth, UStaticMesh* InMesh) {
         for (int32 ColumnIndex = 0; ColumnIndex < Maze[0].Num(); ColumnIndex++)
         {
             AMazeGeneratorCell* NewCell = GetWorld()->SpawnActor<AMazeGeneratorCell>(AMazeGeneratorCell::StaticClass());
-            NewCell->SetActorLocation(FVector(MeshWidth * RowIndex, MeshWidth * ColumnIndex, 0.f));
-            NewCell->SetActorRotation(FRotator(0, 180.0f, 0));
+            NewCell->SetActorLocation(FVector(MeshWidth * RowIndex  * -1, MeshWidth * -1 * ColumnIndex, 0.f));
             NewCell->SetActorLabel(FString::Printf(TEXT("Cell %d%d"), RowIndex, ColumnIndex));
             NewCell->ReplaceSpawnPoint();
+            NewCell->SetX(RowIndex + 1);
+            NewCell->SetY(ColumnIndex + 1);
             Maze[RowIndex][ColumnIndex] = NewCell;
         }
     }

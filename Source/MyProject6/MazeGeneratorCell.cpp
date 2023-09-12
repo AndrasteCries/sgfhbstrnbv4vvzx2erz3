@@ -85,18 +85,8 @@ void AMazeGeneratorCell::BeginPlay()
 
 }
 
-void AMazeGeneratorCell::SpawnBotWall() {
-
-
-}
-
 void AMazeGeneratorCell::DestroyBotWall() {
 	BottomWallMeshComponent->DestroyComponent();
-
-}
-
-void AMazeGeneratorCell::SpawnLeftWall() {
-
 
 }
 
@@ -105,18 +95,8 @@ void AMazeGeneratorCell::DestroyLeftWall() {
 
 }
 
-void AMazeGeneratorCell::SpawnFloor() {
-
-
-}
-
 void AMazeGeneratorCell::DestroyFloor() {
 	FloorWallMeshComponent->DestroyComponent();
-
-}
-
-void AMazeGeneratorCell::SpawnPlayerStart() {
-
 
 }
 
@@ -146,3 +126,4 @@ void AMazeGeneratorCell::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >&
 	DOREPLIFETIME(AMazeGeneratorCell, FloorWallMeshComponent);
 
 }
+

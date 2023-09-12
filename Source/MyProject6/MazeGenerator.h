@@ -32,14 +32,18 @@ public:
 	
 	bool MazeGenerated;
 
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
 	virtual void Tick(float DeltaTime) override;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UFUNCTION(BlueprintCallable)
 		bool GetMazeGenerated();
 
 protected:
 	virtual void BeginPlay() override;
+
+private:
+	void RemoveWallsWithBacktracker();
+	void RemoveWall(AMazeGeneratorCell* Current, AMazeGeneratorCell* Choosen);
 
 };
